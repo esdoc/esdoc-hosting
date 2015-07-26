@@ -62,7 +62,7 @@ header .logo {
 }
 
 .container {
-  padding-top: 70px;
+  padding: 70px 10px 0 10px;
   text-align: center;
 }
 
@@ -89,6 +89,10 @@ header .logo {
   padding: 4px 10px;
 }
 
+.document-index a {
+  word-break: break-all;
+}
+
 .document-index .repo-link {
   display: block;
   text-align: center;
@@ -108,6 +112,7 @@ header .logo {
 }
 
 input.git-url {
+  max-width: 90%;
   width: 30em;
   height: 2em;
   font-size: 1em;
@@ -154,4 +159,16 @@ body.faq {
 body.faq .container {
   display: inline-block;
   text-align: left;
+}
+
+/* smart phone */
+@media (max-width: 600px) {
+
+  .document-index td:nth-child(1), .document-index td:nth-child(2) {
+    display: block;
+  }
+
+  .document-index td:nth-child(3) {
+    display: none;
+  }
 }
