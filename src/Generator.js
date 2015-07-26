@@ -95,6 +95,7 @@ export default class Generator {
     config.coverage = true;
     config.scripts = [];
     config.styles = [];
+    config.plugins = [];
 
     if (config.test) config.test.source = path.resolve(repoDirPath, config.test.source);
 
