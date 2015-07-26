@@ -14,6 +14,7 @@ export default class Generator {
     let gitPath = sourceGitURL.match(/:(.*).git$/)[1];
     this._repoDirPath = `${gitDomain}/${gitPath}-repo`;
     this._esdocDirPath = `${gitDomain}/${gitPath}`;
+    this._gitHTTPS = `https://github.com/${gitPath}.git`;
   }
 
   get outDirPath() {
@@ -38,7 +39,7 @@ export default class Generator {
       yield sh.rm(repoDirPath);
 
       // git clone
-      cmd = `git clone --depth 1 ${url} ${repoDirPath}`;
+      cmd = `git clone --depth 1 ${self._gitHTTPS} ${repoDirPath}`;
       Logger.d(`${url}: ${cmd}`);
       try {
         yield sh.exec(cmd);
