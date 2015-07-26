@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>ESDoc Hosting Service</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="./js/ESDoc.js"></script>
+</head>
+
+<body>
+
+<header>
+  <a href="/" class="logo">ESDoc</a>
+  <a href="/-/index.html">Index</a>
+  <a href="/-/generate.html">Generate</a>
+  <a href="/-/faq.html">FAQ</a>
+</header>
+
+<div class="container">
+  <div class="how-to-register">
+    <ol>
+      <li>Write documentation with <a href="https://esdoc.org">ESDoc</a> syntax.</li>
+      <li>Write <code>esdoc.json</code> to repository root directory.</li>
+      <li>Input repository git url and generate.</li>
+    </ol>
+  </div>
+
+  <input id="gitUrl" class="git-url" type="text" placeholder="git@github.com:foo/bar.git" value="git@github.com:h13i32maru/esdoc.git"/>
+  <div class="notice">Now, support only GitHub</div>
+
+  <p><span id="generateButton" class="generate-button">Generate</span></p>
+
+  <p id="progress" class="progress"></p>
+
+  <p><a id="url"></a></p>
+
+  <p id="errorMessage" class="error-message"></p>
+  <p id="issueLink" class="error-message" style="display: none;">Or write <a href="https://github.com/h13i32maru/esdoc-hosting/issues">issue</a>.</p>
+
+</div>
+
+<footer>
+  &#xA9; 2015 <a href="https://twitter.com/h13i32maru">Ryo Maruyama</a>. All rights reserved.
+</footer>
+
+<script>
+  var creating = false;
+  var button = document.querySelector('#generateButton');
+  var errorEl = document.querySelector('#errorMessage');
+  var progress = document.querySelector('#progress');
+  var link = document.querySelector('#url');
+  var issueLink = document.querySelector('#issueLink');
+
+  button.addEventListener('click', function(){
+    if (creating) return;
+
+    errorEl.textContent = '';
+    progress.textContent = '';
+    link.textContent = '';
+    issueLink.style.display = 'none';
+
+    var gitUrl = document.querySelector('#gitUrl').value.trim();
+
+    if (!ESDoc.validateGitURL(gitUrl)) {
+      errorEl.textContent = 'This is invalid git url. Valid format is "git@github.com:foo/bar.git"';
+      return;
+    }
+
+    var timerId = setInterval(function(){
+      progress.textContent += '.';
+    }, 1000);
+
+    creating = true;
+
+    ESDoc.post('/api/create', {gitUrl: gitUrl}, function(error, responseText){
+      if (error) {
+        // todo
+        creating = false;
+        clearInterval(timerId);
+        console.error(error, responseText);
+        errorEl.textContent = 'Please retry.';
+        progress.text = '';
+        issueLink.style.display = '';
+        return;
+      }
+
+      var res = JSON.parse(responseText);
+
+      if (!res.success) {
+        creating = false;
+        clearInterval(timerId);
+        errorEl.textContent = res.message;
+        progress.text = '';
+        issueLink.style.display = '';
+        return;
+      }
+
+      var path = res.path;
+      var pollingPath = res.path + '/.finish.json';
+      ESDoc.polling(pollingPath, 60000, function(error, responseText){
+        creating = false;
+        clearInterval(timerId);
+        progress.textContent = '';
+
+        if (error) {
+          // todo
+          console.error(error);
+          errorEl.textContent = 'Please retry.';
+          issueLink.style.display = '';
+          return;
+        }
+
+        var response = JSON.parse(responseText);
+        if (!response.success) {
+          // todo
+          console.error(response.message);
+          errorEl.textContent = response.message;
+          issueLink.style.display = '';
+          return;
+        }
+
+        link.href = path;
+        link.textContent = path.replace('/', '');
+
+        progress.textContent = 'Success!';
+      });
+    });
+  });
+</script>
+
+<script src="/-/js/ga.js"></script>
+</body>
+
+</html>

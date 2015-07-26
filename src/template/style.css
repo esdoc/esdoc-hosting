@@ -1,0 +1,9 @@
+.esdoc-hosting-logo {
+  color: #E02130;
+  font-weight: bold;
+  font-size: 1.5em;
+}
+
+.layout-container > header > a.repo-url-github {
+  height: 42px;
+}
