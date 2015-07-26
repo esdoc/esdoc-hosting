@@ -46,6 +46,11 @@ header .logo {
   font-size: 1.25em;
 }
 
+.small {
+  font-size: 0.5em;
+  color: #aaa;
+}
+
 .notice {
   font-size: 0.8em;
   color: #888;
