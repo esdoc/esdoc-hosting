@@ -113,6 +113,7 @@ function updateIndex(gitURL = '') {
         ice.attr('badge', 'src', `../${path}/badge.svg`);
         ice.attr('badgeLink', 'href', `../${path}/badge.svg`);
         ice.attr('repo', 'href', `https://${path}`);
+        ice.attr('updateLink', 'href', `/-/generate.html#url=${row.url}`);
       });
       fs.writeFileSync('./www/-/index.html', ice.html);
     }

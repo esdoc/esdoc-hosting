@@ -3,6 +3,7 @@ body {
   min-height: 100vh;
   margin: 0;
   font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;
+  color: #444;
 }
 
 h2 {
@@ -70,6 +71,22 @@ header .logo {
   font-size: 2em;
   color: #E02130;
   font-weight: bold;
+}
+
+.sub-title {
+  margin-top: 4px;
+}
+
+.invitation {
+  display: inline-block;
+  margin-bottom: 30px;
+  padding: 10px;
+  font-size: 1.2em;
+  font-weight: bold;
+  color: #3c763d;
+  background-color: #dff0d8;
+  border-color: #d6e9c6;
+  border-radius: 4px;
 }
 
 .document-index {
@@ -142,10 +159,13 @@ input.git-url {
   color: #900;
 }
 
-.aaagenerate-button:hover {
-  border-color: #477ab7;
-  background-color: #477ab7;
-  color: white;
+.update-link {
+  background-color: #fbca04;
+  color: #332900;
+  padding: 4px 10px;
+  border-radius: 3px;
+  font-size: 0.6em;
+  font-weight: bold;
 }
 
 .error-message {

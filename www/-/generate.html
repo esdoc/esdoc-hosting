@@ -74,6 +74,7 @@
     var timerId = setInterval(function(){
       progress.textContent += '.';
     }, 1000);
+    progress.textContent += 'Please wait.';
 
     creating = true;
 
@@ -165,6 +166,14 @@
       progress.textContent = 'Success!';
     });
   });
+
+  // take git url from location hash
+  if (location.hash) {
+    var gitUrl = location.hash.replace(/^#url=/, '');
+    if (ESDoc.validateGitURL(gitUrl)) {
+      document.querySelector('#gitUrl').value = gitUrl;
+    }
+  }
 </script>
 
 <script src="/-/js/ga.js"></script>
