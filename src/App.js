@@ -150,3 +150,7 @@ function isExits(path) {
     return false;
   }
 }
+
+if (!isExits('./www/index.html')) {
+  updateIndex();
+}
