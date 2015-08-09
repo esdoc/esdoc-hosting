@@ -57,6 +57,32 @@ app.post('/api/create', function (req, res) {
   res.json({success: true, path: `/${generator.outDirPath}`});
 });
 
+app.post('/api/delete', function(req, res) {
+  let gitUrl = req.body.gitUrl;
+
+  // check git url.
+  if (!GitURL.validate(gitUrl)) {
+    Logger.e(`git url is invalid. ${gitUrl}`);
+    res.json({success: false, message: 'git url is invalid'});
+    return;
+  }
+
+  // delete directory
+  let dirPath = GitURL.outputDirPath(gitUrl, './www/');
+  if (!isExits(dirPath)) {
+    res.json({success: false, message: `${gitUrl} is not exits`});
+    return;
+  }
+  fs.removeSync(dirPath);
+
+  // delete record in sqlite
+  DB.deleteGitURL(gitUrl).then(()=>{
+    updateIndex();
+  });
+
+  res.json({success: true});
+});
+
 let server = app.listen(3000, function () {
   let host = server.address().address;
   let port = server.address().port;
@@ -68,9 +94,9 @@ function finish(dirFullPath, obj) {
   fs.outputFileSync(`${dirFullPath}/.finish.json`, JSON.stringify(obj, null, 2));
 }
 
-function updateIndex(gitURL) {
+function updateIndex(gitURL = '') {
   co(function*(){
-    yield DB.insertGitURL(gitURL);
+    if (gitURL) yield DB.insertGitURL(gitURL);
 
     // /-/index.html
     {
@@ -114,4 +140,13 @@ function updateIndex(gitURL) {
   }).catch((error)=>{
     Logger.e(error);
   });
+}
+
+function isExits(path) {
+  try {
+    fs.statSync(path);
+    return true;
+  } catch(e) {
+    return false;
+  }
 }

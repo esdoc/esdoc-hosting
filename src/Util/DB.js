@@ -44,6 +44,14 @@ export default class DB {
       });
     });
   }
+
+  static deleteGitURL(gitURL) {
+    return new Promise((resolve, reject)=>{
+      sqlite.run('DELETE from git_url where url = ?', gitURL, (error, row)=>{
+        error ? reject(error) : resolve(row);
+      });
+    });
+  }
 }
 
 sqlite.run('CREATE TABLE IF NOT EXISTS git_url (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT UNIQUE NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL)');

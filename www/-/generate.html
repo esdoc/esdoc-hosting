@@ -22,14 +22,17 @@
     <ol>
       <li>Write documentation with <a href="https://esdoc.org">ESDoc</a> syntax.</li>
       <li>Write <code>esdoc.json</code> to repository root directory.</li>
-      <li>Input repository git url and generate.</li>
+      <li>Input repository git url and generate(or update).</li>
     </ol>
   </div>
 
   <input id="gitUrl" class="git-url" type="text" placeholder="git@github.com:foo/bar.git"/>
   <div class="notice">Now, support only GitHub</div>
 
-  <p><span id="generateButton" class="generate-button">Generate</span></p>
+  <p>
+    <span id="generateButton" class="action-button generate-button">Generate</span>
+    <span id="deleteButton" class="action-button delete-button">Delete</span>
+  </p>
 
   <p id="progress" class="progress"></p>
 
@@ -37,7 +40,6 @@
 
   <p id="errorMessage" class="error-message"></p>
   <p id="issueLink" class="error-message" style="display: none;">Or write <a href="https://github.com/h13i32maru/esdoc-hosting/issues">issue</a>.</p>
-
 </div>
 
 <footer>
@@ -46,13 +48,15 @@
 
 <script>
   var creating = false;
-  var button = document.querySelector('#generateButton');
+  var deleting = false;
+  var generateButton = document.querySelector('#generateButton');
+  var deleteButton = document.querySelector('#deleteButton');
   var errorEl = document.querySelector('#errorMessage');
   var progress = document.querySelector('#progress');
   var link = document.querySelector('#url');
   var issueLink = document.querySelector('#issueLink');
 
-  button.addEventListener('click', function(){
+  generateButton.addEventListener('click', function(){
     if (creating) return;
 
     errorEl.textContent = '';
@@ -125,6 +129,40 @@
 
         progress.textContent = 'Success!';
       });
+    });
+  });
+
+  deleteButton.addEventListener('click', function(){
+    if (deleting) return;
+
+    var gitUrl = document.querySelector('#gitUrl').value.trim();
+
+    if (!ESDoc.validateGitURL(gitUrl)) {
+      errorEl.textContent = 'This is invalid git url. Valid format is "git@github.com:foo/bar.git"';
+      return;
+    }
+
+    deleting = true;
+    ESDoc.post('/api/delete', {gitUrl: gitUrl}, function(error, responseText){
+      deleting = false;
+
+      if (error) {
+        // todo
+        console.error(error, responseText);
+        errorEl.textContent = 'Please retry.';
+        progress.text = '';
+        issueLink.style.display = '';
+        return;
+      }
+
+      var res = JSON.parse(responseText);
+      if (!res.success) {
+        errorEl.textContent = res.message;
+        progress.text = '';
+        return;
+      }
+
+      progress.textContent = 'Success!';
     });
   });
 </script>
