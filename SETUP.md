@@ -10,11 +10,12 @@ set /usr/local/var/log/nginx
 set /var/www
 
 # setup node
+npm install -g esdoc-es7-plugin esdoc-importpath-plugin # safe plugin
 npm install -g esdoc forever
 npm install
 npm run build
 
 # start
 nginx
-forever start -c "node --harmony" out/src/App.js
+npm run forever
 ```

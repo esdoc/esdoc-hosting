@@ -95,7 +95,7 @@ export default class Generator {
     config.coverage = true;
     config.scripts = [];
     config.styles = [];
-    config.plugins = [];
+    config.plugins = this._selectSafePlugin(config.plugins);
 
     if (config.test) config.test.source = path.resolve(repoDirPath, config.test.source);
 
@@ -106,6 +106,17 @@ export default class Generator {
     fs.writeFileSync(esdocConfigPath, JSON.stringify(config, null, 2));
 
     return esdocConfigPath;
+  }
+
+  _selectSafePlugin(plugins = []) {
+    const safePluginNames = ['esdoc-es7-plugin', 'esdoc-importpath-plugin'];
+    const results = [];
+
+    for (let item of plugins) {
+      if (safePluginNames.includes(item.name)) results.push(item);
+    }
+
+    return results;
   }
 
   _checkSafeESDocConfig(config, repoDirPath) {

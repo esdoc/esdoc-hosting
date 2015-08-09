@@ -10,7 +10,9 @@
     "url": "https://github.com/h13i32maru/esdoc-hosting"
   },
   "scripts": {
-    "build": "node ./script/build.js"
+    "build": "node ./script/build.js",
+    "start": "NODE_PATH=$(npm prefix -g)/lib/node_modules node --harmony out/src/App.js",
+    "forever": "NODE_PATH=$(npm prefix -g)/lib/node_modules forever start -c 'node --harmony' out/src/App.js"
   },
   "dependencies": {
     "body-parser": "^1.13.2",
