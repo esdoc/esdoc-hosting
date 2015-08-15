@@ -83,7 +83,7 @@ app.post('/api/delete', function(req, res) {
   res.json({success: true});
 });
 
-let server = app.listen(3000, function () {
+let server = app.listen(3000, 'localhost', function () {
   let host = server.address().address;
   let port = server.address().port;
 
