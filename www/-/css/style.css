@@ -175,7 +175,7 @@ input.git-url {
 
 footer {
   position: absolute;
-  bottom: 0;
+  bottom: -120px;
   width: 100%;
   padding: 60px 20px 30px 0;
   text-align: right;
@@ -184,6 +184,7 @@ footer {
   color: #888;
   font-size: 12px;
   margin-top: 60px;
+  box-sizing: border-box;
 }
 
 body.faq {
