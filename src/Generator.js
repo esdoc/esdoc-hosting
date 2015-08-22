@@ -9,6 +9,7 @@ export default class Generator {
   constructor(sourceGitURL, destinationDirPath) {
     this._sourceGitURL = sourceGitURL;
     this._destinationDirPath = path.resolve(destinationDirPath);
+    this._packageJSON = '';
 
     let gitDomain = sourceGitURL.match(/@(.*?):/)[1];
     let gitPath = sourceGitURL.match(/:(.*).git$/)[1];
@@ -23,6 +24,10 @@ export default class Generator {
 
   get outDirFullPath() {
     return `${this._destinationDirPath}/${this._esdocDirPath}`;
+  }
+
+  get packageJSON() {
+    return this._packageJSON;
   }
 
   exec() {
@@ -64,6 +69,21 @@ export default class Generator {
         yield sh.exec(cmd);
       } catch(e) {
         throw new Error('Fail esdoc. Please check esdoc.json.');
+      }
+
+      // package.json
+      try {
+        fs.copySync(`${repoDirPath}/package.json`, `${esdocDirPath}/package.json`);
+        self._packageJSON = fs.readFileSync(`${esdocDirPath}/package.json`).toString();
+      } catch(e) {
+        // ignore
+      }
+
+      // readme
+      try {
+        fs.copySync(`${repoDirPath}/README.md`, `${esdocDirPath}/README.md`);
+      } catch(e) {
+        // ignore
       }
 
       // clean up

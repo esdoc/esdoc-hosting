@@ -1,0 +1,47 @@
+{
+  "settings": {
+    "analysis": {
+      "analyzer": {
+        "camel": {
+          "type": "pattern",
+          "pattern": "([^\\p{L}\\d]+)|(?<=\\D)(?=\\d)|(?<=\\d)(?=\\D)|(?<=[\\p{L}&&[^\\p{Lu}]])(?=\\p{Lu})|(?<=\\p{Lu})(?=\\p{Lu}[\\p{L}&&[^\\p{Lu}]])"
+        }
+      }
+    }
+  },
+  "mappings": {
+    "meta": {
+      "properties": {
+        "git_url": {"type": "string"},
+        "url": {"type": "string"},
+        "name": {"type": "string"},
+        "description": {"type": "string"},
+        "author": {"type": "string"},
+        "readme": {"type": "string"},
+        "createdAt": {"type": "date", "format": "YYYY-MM-dd HH:mm:ss"}
+      }
+    },
+
+    "tag": {
+      "properties": {
+        "git_url": {"type": "string"},
+        "filePath": {"type": "string"},
+        "url": {"type": "string"},
+        "kind": {"type": "string"},
+        "name": {"type": "string", "analyzer": "camel"},
+        "description": {"type": "string"},
+        "todo": {"type": "string"},
+        "extends": {"type": "string", "analyzer": "camel"},
+        "implements": {"type": "string", "analyzer": "camel"},
+        "type": {"type": "string", "analyzer": "camel"},
+        "return": {"type": "string", "analyzer": "camel"},
+        "params": {"type": "string", "analyzer": "camel"},
+        "properties": {"type": "string", "analyzer": "camel"},
+        "throws": {"type": "string", "analyzer": "camel"},
+        "emits": {"type": "string", "analyzer": "camel"},
+        "listens": {"type": "string", "analyzer": "camel"},
+        "created_at": {"type": "date", "format": "YYYY-MM-dd HH:mm:ss"}
+      }
+    }
+  }
+}

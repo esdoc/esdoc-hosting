@@ -19,3 +19,13 @@ npm run build
 nginx
 npm run forever
 ```
+
+# Elasticsearch
+```sh
+unzip elasticsearch-1.7.1.zip
+ce elasticsearch
+./bin/plugin -install mobz/elasticsearch-head
+./bin/elasticsearch
+
+curl -XPOST localhost:9200/esdoc -d @elasticsearch/mapping.json
+```

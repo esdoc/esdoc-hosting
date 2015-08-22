@@ -1,0 +1,9 @@
+{
+  "query": {
+    "simple_query_string": {
+      "query": "parser",
+      "fields": ["name", "description"],
+      "default_operator": "and"
+    }
+  }
+}

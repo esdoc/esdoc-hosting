@@ -7,6 +7,8 @@ import GitURL from './Util/GitURL.js';
 import ESDocGenerator from './Generator';
 import DB from './Util/DB.js';
 import Logger from './Util/Logger.js';
+import ElasticSearchUpdater from './ElasticSearch/ElasticSearchUpdater.js';
+import ElasticSearcher from './ElasticSearch/ElasticSearcher.js';
 
 let app = express();
 
@@ -44,9 +46,11 @@ app.post('/api/create', function (req, res) {
   let generator = new ESDocGenerator(gitUrl, './www/');
   fs.removeSync(generator.outDirFullPath);
   generator.exec().then(()=>{
-    updateIndex(gitUrl);
+    updateIndex(gitUrl, generator.packageJSON);
     finish(generator.outDirFullPath, {success: true});
+    updateElasticSearch(gitUrl, generator.outDirFullPath);
   }).catch((error)=>{
+    Logger.e(error.stack);
     Logger.e(error);
     finish(generator.outDirFullPath, {success: false, message: error.message});
   }).then(()=>{
@@ -83,6 +87,20 @@ app.post('/api/delete', function(req, res) {
   res.json({success: true});
 });
 
+app.get('/api/search', function(req, res){
+  co(function*(){
+    const keyword = req.query.keyword;
+    if (!keyword) {
+      res.json({success: false, message: 'keyword is not found'});
+      return;
+    }
+
+    const searcher = new ElasticSearcher();
+    const result = yield searcher.search(keyword);
+    res.json({success: true, result: result});
+  });
+});
+
 let server = app.listen(3000, 'localhost', function () {
   let host = server.address().address;
   let port = server.address().port;
@@ -94,9 +112,9 @@ function finish(dirFullPath, obj) {
   fs.outputFileSync(`${dirFullPath}/.finish.json`, JSON.stringify(obj, null, 2));
 }
 
-function updateIndex(gitURL = '') {
+function updateIndex(gitURL = '', packageJSON = '') {
   co(function*(){
-    if (gitURL) yield DB.insertGitURL(gitURL);
+    if (gitURL) yield DB.insertGitURL(gitURL, packageJSON);
 
     // /-/index.html
     {
@@ -150,6 +168,11 @@ function isExits(path) {
   } catch(e) {
     return false;
   }
+}
+
+function updateElasticSearch(gitUrl, dirPath) {
+  const updater = new ElasticSearchUpdater(gitUrl, dirPath);
+  updater.update();
 }
 
 if (!isExits('./www/index.html')) {

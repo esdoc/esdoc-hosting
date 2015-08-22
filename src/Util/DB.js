@@ -6,7 +6,7 @@ let tmp = _sqlite3.verbose();
 let sqlite = new tmp.Database('./sqlite3/main.db');
 
 export default class DB {
-  static insertGitURL(gitURL) {
+  static insertGitURL(gitURL, packageJSON = '') {
     return co(function*(){
       let sql;
       let data;
@@ -14,11 +14,11 @@ export default class DB {
       let _ = yield this.selectGitURL(gitURL);
 
       if (_) {
-        sql = 'UPDATE git_url SET updated_at = ? WHERE url = ?';
-        data = [date, gitURL];
+        sql = 'UPDATE git_url SET package = ?, updated_at = ?WHERE url = ?';
+        data = [packageJSON, date, gitURL];
       } else {
-        sql = 'INSERT INTO git_url (url, created_at, updated_at) VALUES (?, ?, ?)';
-        data = [gitURL, date, date];
+        sql = 'INSERT INTO git_url (url, package, created_at, updated_at) VALUES (?, ?, ?, ?)';
+        data = [gitURL, packageJSON, date, date];
       }
 
       yield new Promise((resolve, reject)=>{
@@ -53,5 +53,3 @@ export default class DB {
     });
   }
 }
-
-sqlite.run('CREATE TABLE IF NOT EXISTS git_url (id INTEGER PRIMARY KEY AUTOINCREMENT, url TEXT UNIQUE NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL)');

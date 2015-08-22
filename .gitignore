@@ -8,3 +8,4 @@ npm-debug.log
 /www/-/index.html
 /sqlite3/main.db
 /log/*.log
+/elasticsearch/elasticsearch-1.7.1*
