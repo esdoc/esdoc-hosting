@@ -38,7 +38,8 @@ export default class ElasticSearcher {
       {name: 'properties', boost: 1},
       {name: 'throws', boost: 1},
       {name: 'emits', boost: 1},
-      {name: 'listens', boost: 1}
+      {name: 'listens', boost: 1},
+      {name: 'test_targets', boost: 1}
     ];
 
     const should = [];
@@ -53,16 +54,6 @@ export default class ElasticSearcher {
         }
       });
     }
-
-    //return {
-    //  "query": {
-    //    "simple_query_string": {
-    //      "query": keyword,
-    //        "fields": ["name", "description"],
-    //        "default_operator": "and"
-    //    }
-    //  }
-    //}
 
     return {
       "query": {

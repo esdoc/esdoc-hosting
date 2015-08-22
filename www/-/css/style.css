@@ -24,6 +24,10 @@ a {
   text-decoration: none;
 }
 
+input {
+  outline: none;
+}
+
 code {
   padding: 0 4px;
   background: #eee;
@@ -206,4 +210,64 @@ body.faq .container {
   .document-index td:nth-child(3) {
     display: none;
   }
+}
+
+/* search */
+body.search .container {
+  width: 600px;
+  margin: auto;
+}
+
+.search-keyword {
+  width: 500px;
+  padding: 0 4px;
+  height: 2em;
+  font-size: 1em;
+}
+
+.search-result h1 {
+  margin: 1em 0 0.25em 0;
+  padding-bottom: 0.25em;
+  font-size: 1.5em;
+  text-align: left;
+}
+
+.search-result h1:nth-of-type(1) {
+  margin-top: 0;
+}
+
+.hits {
+  text-align: left;
+}
+
+.hit {
+  margin-bottom: 1em;
+}
+
+.hit-name {
+  font-size: 1.2em;
+}
+
+.hit-url {
+  margin: 2px 0;
+  color: #006621;
+  font-size: 0.8em;
+}
+
+.hit-description {
+  font-size: 1em;
+}
+
+.hit-no-description {
+  font-style: italic;
+}
+
+.hit-kind {
+  background-color: #fbca04;
+  color: #332900;
+  padding: 2px 4px;
+  border-radius: 3px;
+  font-size: 0.6em;
+  font-weight: bold;
+  margin-left: 1em;
 }

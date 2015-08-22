@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ESDoc Hosting Service</title>
+  <link rel="stylesheet" href="./css/style.css">
+  <script src="/-/js/zepto.min.js"></script>
+</head>
+
+<body class="search">
+
+<header>
+  <a href="/" class="logo">ESDoc</a>
+  <a href="/-/index.html">Index</a>
+  <a href="/-/generate.html">Generate</a>
+  <a href="/-/search.html">Search</a>
+  <a href="/-/faq.html">FAQ</a>
+</header>
+
+<div class="container">
+  <div class="search-box">
+    <input id="keyword" class="search-keyword" type="text"/>
+    <span id="searchButton" class="action-button">Search</span>
+  </div>
+
+  <div class="search-result">
+    <div id="hitPackages" class="hits"></div>
+    <div id="hitCodes" class="hits"></div>
+    <div id="hitTests" class="hits"></div>
+  </div>
+</div>
+
+<script src="./js/Search.js"></script>
+<script>
+  (function(){
+    var keywordInput = document.querySelector('#keyword');
+    var button = document.querySelector('#searchButton');
+    button.addEventListener('click', onButton);
+    keywordInput.addEventListener('keydown', function(ev){
+      if (ev.keyCode === 13) onButton();
+    });
+
+    function onButton() {
+      if (!keywordInput.value) return;
+      location.href = '?keyword=' + encodeURIComponent(keywordInput.value);
+    }
+
+    window.addEventListener('DOMContentLoaded', function(){
+      var matched = location.search.match(/keyword=([^?]*)/);
+      if (!matched) return;
+      var keyword = decodeURIComponent(matched[1]);
+      keywordInput.value = keyword;
+      ESDoc.search(keyword, function(error, result){
+        if (error) {
+          // todo
+          console.log(error);
+          return;
+        }
+
+        showResult(result.result);
+      });
+    });
+
+    function showResult(result) {
+      var hitPackages = [];
+      var hitCodes = [];
+      var hitTests = [];
+
+      for (var i = 0; i < result.hits.length; i++) {
+        var hit = result.hits[i];
+        if (!hit.kind) {
+          hit.kind = 'package';
+          hitPackages.push(hit);
+        }
+        else if (hit.kind === 'testIt' || hit.kind === 'testDescribe') {
+          hit.kind = 'test';
+          hitTests.push(hit);
+        } else {
+          hitCodes.push(hit);
+        }
+      }
+
+      showHits(hitPackages, '#hitPackages');
+      showHits(hitCodes, '#hitCodes');
+      showHits(hitTests, '#hitTests');
+    }
+
+    function showHits(hits, id) {
+      var fragment = document.createDocumentFragment();
+      var template = document.querySelector('#hitTemplate').textContent;
+      for (var i = 0; i < hits.length; i++)  {
+        var hit = hits[i];
+        var name;
+        var desc = hit.description || 'No Description';
+        var hitEl = $(template);
+        if (hit.name) {
+          name = hit.name
+        } else if (hit.test_targets) {
+          name = 'test of ' + hit.test_targets.split(' ').join(', ');
+        } else {
+          name = 'No Name';
+        }
+        hitEl.find('.hit-name').text(name).attr('href', hit.url);
+        hitEl.find('.hit-url').text(hit.url);
+        hitEl.find('.hit-kind').text(hit.kind);
+        hitEl.find('.hit-description').text(desc);
+        fragment.appendChild(hitEl.get(0));
+      }
+      var resultEl = document.querySelector(id);
+      resultEl.innerHTML = '';
+      resultEl.appendChild(fragment);
+    }
+  })();
+</script>
+
+<script id="hitTemplate" type="text/x-template" style="display: none;">
+  <div class="hit">
+    <a href="" class="hit-name"></a>
+    <span class="hit-kind"></span>
+    <div class="hit-url"></div>
+    <div class="hit-description"></div>
+  </div>
+</script>
+
+</body>
+</html>

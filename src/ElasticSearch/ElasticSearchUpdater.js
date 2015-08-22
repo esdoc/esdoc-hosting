@@ -70,7 +70,7 @@ export default class ElasticSearchUpdater {
 
     return client.index({
       index: 'esdoc',
-      type: 'meta',
+      type: 'package',
       body: body
     });
   }
@@ -171,31 +171,15 @@ export default class ElasticSearchUpdater {
       }
       record.listens = record.listens.join(' ');
 
+      // testTargets
+      record.testTargets = [];
+      if (tag.testTargets) record.test_targets = tag.testTargets.join(' ');
+
       records.push(record);
     }
 
     return records;
   }
-
-  //_getPackageJSON() {
-  //  try {
-  //    let filePath = `${this._documentDirPath}/package.json`;
-  //    let obj = JSON.parse(fs.readFileSync(filePath).toString());
-  //    return JSON.stringify({
-  //      name: obj.name,
-  //      version: obj.version,
-  //      description: obj.description,
-  //      author: obj.author,
-  //      homepage: obj.homepage,
-  //      license: obj.license,
-  //      repository: obj.repository
-  //    });
-  //  } catch(e) {
-  //    // ignore
-  //  }
-  //
-  //  return '';
-  //}
 
   _buildFilePath(tag) {
     switch (tag.kind) {
@@ -239,7 +223,7 @@ export default class ElasticSearchUpdater {
 
       yield client.deleteByQuery({
         index: 'esdoc',
-        type: 'meta',
+        type: 'package',
         body: {
           "query": {
             "simple_query_string": {
