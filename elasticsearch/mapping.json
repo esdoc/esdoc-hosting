@@ -10,7 +10,7 @@
     }
   },
   "mappings": {
-    "meta": {
+    "package": {
       "properties": {
         "git_url": {"type": "string"},
         "url": {"type": "string"},
@@ -18,7 +18,7 @@
         "description": {"type": "string"},
         "author": {"type": "string"},
         "readme": {"type": "string"},
-        "createdAt": {"type": "date", "format": "YYYY-MM-dd HH:mm:ss"}
+        "created_at": {"type": "date", "format": "YYYY-MM-dd HH:mm:ss"}
       }
     },
 
@@ -40,6 +40,7 @@
         "throws": {"type": "string", "analyzer": "camel"},
         "emits": {"type": "string", "analyzer": "camel"},
         "listens": {"type": "string", "analyzer": "camel"},
+        "test_targets": {"type": "string", "analyzer": "camel"},
         "created_at": {"type": "date", "format": "YYYY-MM-dd HH:mm:ss"}
       }
     }
