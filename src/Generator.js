@@ -1,10 +1,10 @@
 import es6shim from 'core-js/shim';
-//import * as sh from './Util/sh.js';
 import Process from './Util/Process.js';
 import fs from 'fs-extra';
 import path from 'path';
 import co from 'co';
 import Logger from './Util/Logger.js';
+import File from './Util/File.js';
 
 export default class Generator {
   constructor(sourceGitURL, destinationDirPath) {
@@ -95,8 +95,10 @@ export default class Generator {
   }
 
   _writeSafeESDocConfig(repoDirPath, esdocDirPath) {
-    let esdocConfigPath = `${repoDirPath}/esdoc.json`;
-    let config = JSON.parse(fs.readFileSync(esdocConfigPath));
+    this._guessConfig(repoDirPath, esdocDirPath);
+
+    const esdocConfigPath = `${repoDirPath}/esdoc.json`;
+    const config = JSON.parse(fs.readFileSync(esdocConfigPath));
 
     config.source = path.resolve(repoDirPath, config.source);
     config.destination = esdocDirPath;
@@ -157,5 +159,42 @@ export default class Generator {
   _injectStyleAndScript(config) {
     config.scripts = ['./www/-/js/ga.js'];
     config.styles = ['./src/Page/Template/style.css'];
+  }
+
+  _guessConfig(repoDirPath, esdocDirPath) {
+    // found esdoc config.
+    const esdocConfigPath = `${repoDirPath}/esdoc.json`;
+    if (File.isExist(esdocConfigPath)) return;
+
+    // not found package.json, so this is not JS repository
+    const packageJSONPath = `${repoDirPath}/package.json`;
+    if (!File.isExist(packageJSONPath)) return;
+
+    // guess source directory
+    const srcPath = `${repoDirPath}/src`;
+    if (!File.isExist(srcPath)) return;
+
+    // guess ES6
+    let isES6 = false;
+    File.walk(srcPath, (entryPath)=>{
+      const code = fs.readFileSync(entryPath).toString();
+      if (code.match(/^import /m)) {
+        isES6 = true;
+        return false;
+      }
+    });
+    if (!isES6) return;
+
+    // make config
+    const config = {
+      source: srcPath,
+      destination: esdocDirPath,
+      plugins: [
+        {name: 'esdoc-es7-plugin'}
+      ]
+    };
+
+    // write config
+    fs.writeFileSync(esdocConfigPath, JSON.stringify(config));
   }
 }

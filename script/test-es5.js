@@ -4,7 +4,7 @@ var sh = require('./sh');
 // judge node or io because run test with node and io on TRAVIS.
 // send coverage report with only node.
 var isNodeJS = process.version.indexOf('v0.12.') === 0;
-var mochaOption=" -t 10000 --recursive ./out/test/src -R spec";
+var mochaOption=" -t 20000 --recursive ./out/test/src -R spec";
 
 sh.exec('node ./script/build.js');
 
