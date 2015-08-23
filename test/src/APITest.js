@@ -16,7 +16,9 @@ describe('API:', ()=>{
     return co(function*(){
       const paths = ['./sqlite3/001.sql', './sqlite3/002.sql'];
       for (let path of paths) {
+        console.log(path);
         const sql = fs.readFileSync(path).toString();
+        console.log(sql);
         yield DB.run(sql);
       }
     });
