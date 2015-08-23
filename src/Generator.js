@@ -137,6 +137,9 @@ export default class Generator {
       if (safePluginNames.includes(item.name)) results.push(item);
     }
 
+    // esdoc logo plugin
+    results.push({name: './src/Plugin/LogoPlugin.js'});
+
     return results;
   }
 
@@ -152,7 +155,7 @@ export default class Generator {
   }
 
   _injectStyleAndScript(config) {
-    config.scripts = ['./src/Page/Template/script.js', './www/-/js/ga.js'];
+    config.scripts = ['./www/-/js/ga.js'];
     config.styles = ['./src/Page/Template/style.css'];
   }
 }
