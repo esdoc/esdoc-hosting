@@ -8,6 +8,38 @@ import marked from 'marked';
 import sanitize from 'sanitize-html';
 
 export default class ElasticSearchUpdater {
+  static delete(gitURL) {
+    return co(function*(){
+      yield client.deleteByQuery({
+        index: 'esdoc',
+        type: 'tag',
+        body: {
+          "query": {
+            "simple_query_string": {
+              "query": gitURL,
+              "fields": ["git_url"],
+              "default_operator": "and"
+            }
+          }
+        }
+      });
+
+      yield client.deleteByQuery({
+        index: 'esdoc',
+        type: 'package',
+        body: {
+          "query": {
+            "simple_query_string": {
+              "query": gitURL,
+              "fields": ["git_url"],
+              "default_operator": "and"
+            }
+          }
+        }
+      });
+    });
+  }
+
   constructor(gitURL, documentDirPath) {
     this._gitURL = gitURL;
     this._documentDirPath = documentDirPath;
@@ -206,34 +238,6 @@ export default class ElasticSearchUpdater {
   }
 
   _deleteCurrentIndex() {
-    return co(function*(){
-      yield client.deleteByQuery({
-        index: 'esdoc',
-        type: 'tag',
-        body: {
-          "query": {
-            "simple_query_string": {
-              "query": this._gitURL,
-              "fields": ["git_url"],
-              "default_operator": "and"
-            }
-          }
-        }
-      });
-
-      yield client.deleteByQuery({
-        index: 'esdoc',
-        type: 'package',
-        body: {
-          "query": {
-            "simple_query_string": {
-              "query": this._gitURL,
-              "fields": ["git_url"],
-              "default_operator": "and"
-            }
-          }
-        }
-      });
-    }.bind(this));
+    return this.constructor.delete(this._gitURL);
   }
 }

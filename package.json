@@ -12,6 +12,8 @@
   "scripts": {
     "build": "node ./script/build.js",
     "start": "NODE_PATH=$(npm prefix -g)/lib/node_modules node --harmony out/src/App.js",
+    "test": "node ./script/test.js",
+    "test-es5": "node ./script/test-es5.js",
     "forever": "NODE_PATH=$(npm prefix -g)/lib/node_modules forever start -c 'node --harmony' out/src/App.js"
   },
   "dependencies": {

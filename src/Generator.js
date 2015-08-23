@@ -1,5 +1,6 @@
 import es6shim from 'core-js/shim';
-import * as sh from './Util/sh.js';
+//import * as sh from './Util/sh.js';
+import Process from './Util/Process.js';
 import fs from 'fs-extra';
 import path from 'path';
 import co from 'co';
@@ -40,14 +41,14 @@ export default class Generator {
       let cmd;
 
       // clean up
-      yield sh.rm(esdocDirPath);
-      yield sh.rm(repoDirPath);
+      fs.removeSync(esdocDirPath);
+      fs.removeSync(repoDirPath);
 
       // git clone
       cmd = `git clone --depth 1 ${self._gitHTTPS} ${repoDirPath}`;
       Logger.d(`${url}: ${cmd}`);
       try {
-        yield sh.exec(cmd);
+        yield Process.exec(cmd);
       } catch(e) {
         Logger.e(e);
         throw new Error('Fail git clone. Please check git url.');
@@ -66,7 +67,7 @@ export default class Generator {
       cmd = `esdoc -c ${esdocConfigPath}`;
       Logger.d(`${url}: ${cmd}`);
       try {
-        yield sh.exec(cmd);
+        yield Process.exec(cmd);
       } catch(e) {
         throw new Error('Fail esdoc. Please check esdoc.json.');
       }
@@ -87,7 +88,7 @@ export default class Generator {
       }
 
       // clean up
-      yield sh.rm(repoDirPath);
+      fs.removeSync(repoDirPath);
 
       Logger.d(`${url}: finish`);
     });
@@ -151,7 +152,7 @@ export default class Generator {
   }
 
   _injectStyleAndScript(config) {
-    config.scripts = ['./src/template/script.js', './www/-/js/ga.js'];
-    config.styles = ['./src/template/style.css'];
+    config.scripts = ['./src/Page/Template/script.js', './www/-/js/ga.js'];
+    config.styles = ['./src/Page/Template/style.css'];
   }
 }

@@ -9,3 +9,4 @@ npm-debug.log
 /sqlite3/main.db
 /log/*.log
 /elasticsearch/elasticsearch-1.7.1*
+/test/fixture

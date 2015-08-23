@@ -1,7 +1,7 @@
 import path from 'path';
 import minimist from 'minimist';
 import fs from 'fs-extra';
-import Generator from './Generator.js';
+import Generator from './../src/Generator.js';
 
 export default class GenerateCLI {
   constructor(argv) {
