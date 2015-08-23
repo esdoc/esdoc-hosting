@@ -1,5 +1,6 @@
 import client from './ElasticSearchClient.js';
 import co from 'co';
+import DB from '../Util/DB.js';
 
 export default class ElasticSearcher {
   constructor(size = 500, from = 0) {
@@ -16,7 +17,7 @@ export default class ElasticSearcher {
         from: this._from,
         body: query
       });
-      return this._formatResult(result);
+      return yield this._formatResult(result);
     }.bind(this));
   }
 
@@ -65,16 +66,31 @@ export default class ElasticSearcher {
   }
 
   _formatResult(result) {
+    return co(this._formatResultAsync.bind(this, result));
+  }
+
+  *_formatResultAsync(result) {
     const formatted = {
       size: this._size,
-      from: this._from
+      from: this._from,
+      total: result.hits.total,
+      hits: []
     };
 
-    formatted.total = result.hits.total;
+    const packages = {};
 
-    formatted.hits = [];
     for (let hit of result.hits.hits) {
-      formatted.hits.push(hit._source);
+      const source = hit._source;
+
+      const gitUrl = source.git_url;
+      if (!packages[gitUrl]) {
+        const record = yield DB.selectGitURL(gitUrl);
+        const packageObj = JSON.parse(record.package);
+        packages[gitUrl] = packageObj.name;
+      }
+
+      source.package = packages[gitUrl];
+      formatted.hits.push(source);
     }
 
     return formatted;

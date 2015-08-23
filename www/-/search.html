@@ -94,13 +94,17 @@
         var name;
         var desc = hit.description || 'No Description';
         var hitEl = $(template);
-        if (hit.name) {
+
+        if (hit.kind === 'package') {
           name = hit.name
+        } else if (hit.name) {
+          name = hit.name + ' | ' + hit.package;
         } else if (hit.test_targets) {
-          name = 'test of ' + hit.test_targets.split(' ').join(', ');
+          name = 'test of ' + hit.test_targets.split(' ').join(', ') + ' | ' + hit.package;
         } else {
-          name = 'No Name';
+          name = 'No Name' + ' | ' + hit.package;
         }
+
         hitEl.find('.hit-name').text(name).attr('href', hit.url);
         hitEl.find('.hit-url').text(hit.url);
         hitEl.find('.hit-kind').text(hit.kind);
