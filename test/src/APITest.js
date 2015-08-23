@@ -8,6 +8,7 @@ import {Response, Request} from './Mock.js';
 
 API.destinationDirPath = './test/fixture/www';
 
+fs.mkdirsSync('./test/fixture');
 fs.removeSync('./test/fixture/main.db');
 DB.path = './test/fixture/main.db';
 
@@ -16,14 +17,8 @@ describe('API:', ()=>{
     return co(function*(){
       const paths = ['./sqlite3/001.sql', './sqlite3/002.sql'];
       for (let path of paths) {
-        console.log(path);
         const sql = fs.readFileSync(path).toString();
-        console.log(sql);
-        try {
-          yield DB.run(sql);
-        } catch(e) {
-          console.log(e);
-        }
+        yield DB.run(sql);
       }
     });
   });
