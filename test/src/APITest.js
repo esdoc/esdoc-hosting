@@ -19,7 +19,11 @@ describe('API:', ()=>{
         console.log(path);
         const sql = fs.readFileSync(path).toString();
         console.log(sql);
-        yield DB.run(sql);
+        try {
+          yield DB.run(sql);
+        } catch(e) {
+          console.log(e);
+        }
       }
     });
   });
