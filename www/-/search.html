@@ -24,11 +24,7 @@
     <span id="searchButton" class="action-button">Search</span>
   </div>
 
-  <div class="search-result">
-    <div id="hitPackages" class="hits"></div>
-    <div id="hitCodes" class="hits"></div>
-    <div id="hitTests" class="hits"></div>
-  </div>
+  <div id="hits" class="search-result"></div>
 </div>
 
 <script src="./js/Search.js"></script>
@@ -36,6 +32,8 @@
   (function(){
     var keywordInput = document.querySelector('#keyword');
     var button = document.querySelector('#searchButton');
+    var resultEl = document.querySelector('#hits');
+
     button.addEventListener('click', onButton);
     keywordInput.addEventListener('keydown', function(ev){
       if (ev.keyCode === 13) onButton();
@@ -51,6 +49,8 @@
       if (!matched) return;
       var keyword = decodeURIComponent(matched[1]);
       keywordInput.value = keyword;
+
+      resultEl.innerHTML = 'Search...';
       ESDoc.search(keyword, function(error, result){
         if (error) {
           // todo
@@ -81,12 +81,19 @@
         }
       }
 
-      showHits(hitPackages, '#hitPackages');
-      showHits(hitCodes, '#hitCodes');
-      showHits(hitTests, '#hitTests');
+      var hitAll = hitPackages.concat(hitCodes).concat(hitTests);
+      showHits(hitAll, '#hits');
     }
 
     function showHits(hits, id) {
+      var resultEl = document.querySelector(id);
+      resultEl.innerHTML = '';
+
+      if (hits.length === 0) {
+        resultEl.textContent = 'No Result';
+        return;
+      }
+
       var fragment = document.createDocumentFragment();
       var template = document.querySelector('#hitTemplate').textContent;
       for (var i = 0; i < hits.length; i++)  {
@@ -111,8 +118,6 @@
         hitEl.find('.hit-description').text(desc);
         fragment.appendChild(hitEl.get(0));
       }
-      var resultEl = document.querySelector(id);
-      resultEl.innerHTML = '';
       resultEl.appendChild(fragment);
     }
   })();
