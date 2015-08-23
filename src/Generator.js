@@ -176,7 +176,10 @@ export default class Generator {
 
     // guess ES6
     let isES6 = false;
+    const ext = ['.js', '.es', '.es6', '.es7'];
     File.walk(srcPath, (entryPath)=>{
+      if (!ext.includes(path.extname(entryPath))) return;
+
       const code = fs.readFileSync(entryPath).toString();
       if (code.match(/^import /m)) {
         isES6 = true;
