@@ -21,19 +21,24 @@
 <div class="container">
   <div class="how-to-register">
     <ol>
-      <li>Write documentation with <a href="https://esdoc.org">ESDoc</a> syntax.</li>
-      <li>Write <code>esdoc.json</code> to repository root directory.</li>
-      <li>Input repository git url and generate(or update).</li>
+      <li>Inputs your repository and click generation button.</li>
+      <li>
+        And if you will use <a href="https://esdoc.org">ESDoc</a>, generates more nice documentation.<br>
+        <span class="notice">write ESDoc syntax and <code>esdoc.json</code> into repository root.</span>
+      </li>
     </ol>
   </div>
 
   <input id="gitUrl" class="git-url" type="text" placeholder="git@github.com:foo/bar.git"/>
-  <div class="notice">Now, support only GitHub</div>
+  <div class="notice">If fail generating documentation, please report issue to <a href="https://github.com/esdoc/esdoc-hosting/issues">here</a>.</div>
 
   <p>
     <span id="generateButton" class="action-button generate-button">Generate</span>
     <span id="deleteButton" class="action-button delete-button">Delete</span>
   </p>
+
+
+
 
   <p id="progress" class="progress"></p>
 

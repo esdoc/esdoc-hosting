@@ -123,7 +123,8 @@ header .logo {
   width: 24px;
 }
 
-.how-to-register ol{
+.how-to-register ol {
+  margin: 0 0 1em 0;
   display: inline-block;
   text-align: left;
 }
