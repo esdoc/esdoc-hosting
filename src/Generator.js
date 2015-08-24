@@ -74,7 +74,6 @@ export default class Generator {
 
       // package.json
       try {
-        fs.copySync(`${repoDirPath}/package.json`, `${esdocDirPath}/package.json`);
         self._packageJSON = fs.readFileSync(`${esdocDirPath}/package.json`).toString();
       } catch(e) {
         // ignore
