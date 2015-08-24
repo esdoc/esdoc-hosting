@@ -62,7 +62,6 @@ class API {
 
         finish(generator.outDirFullPath, {success: true});
       } catch(e) {
-        Logger.e(e.stack);
         Logger.e(e);
         finish(generator.outDirFullPath, {success: false, message: e.message});
       }

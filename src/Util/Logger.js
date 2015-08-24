@@ -17,7 +17,7 @@ class Logger {
     let text;
 
     if (obj instanceof Error) {
-      text = obj.toString();
+      text = obj.toString() + obj.stack;
     } else {
       try {
         text = JSON.stringify(obj);
