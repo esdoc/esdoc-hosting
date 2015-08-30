@@ -24,7 +24,18 @@
     <span id="searchButton" class="action-button">Search</span>
   </div>
 
-  <div id="hits" class="search-result"></div>
+  <div class="tab-buttons">
+    <span class="jsTabButton tab-button tab-active" data-tab="#hitPackages">Package <span class="jsCount count"></span></span><!--
+    --><span class="jsTabButton tab-button" data-tab="#hitCodes">Code <span class="jsCount count"></span></span><!--
+    --><span class="jsTabButton tab-button" data-tab="#hitTests">Test <span class="jsCount count"></span></span>
+  </div>
+
+  <div class="tab-contents">
+    <div id="hitPackages" class="jsTabContent search-result"></div>
+    <div id="hitCodes" class="jsTabContent search-result" style="display:none;"></div>
+    <div id="hitTests" class="jsTabContent search-result" style="display:none;"></div>
+  </div>
+
 </div>
 
 <script src="./js/Search.js"></script>
@@ -32,8 +43,8 @@
   (function(){
     var keywordInput = document.querySelector('#keyword');
     var button = document.querySelector('#searchButton');
-    var resultEl = document.querySelector('#hits');
 
+    // search button
     button.addEventListener('click', onButton);
     keywordInput.addEventListener('keydown', function(ev){
       if (ev.keyCode === 13) onButton();
@@ -44,19 +55,25 @@
       location.href = '?keyword=' + encodeURIComponent(keywordInput.value);
     }
 
+    // tab
+    $('.jsTabButton').on('click', function(){
+      var tabContentId = $(this).data('tab');
+      var tabContent = $(tabContentId);
+      if (tabContent.css('display') !== 'none') return;
+      $('.jsTabContent').css('display', 'none');
+      tabContent.css('display', '');
+      $('.tab-button').removeClass('tab-active');
+      $(this).addClass('tab-active');
+    });
+
+    // search if location has keyword query
     window.addEventListener('DOMContentLoaded', function(){
       var matched = location.search.match(/keyword=([^?]*)/);
       if (!matched) return;
       var keyword = decodeURIComponent(matched[1]);
       keywordInput.value = keyword;
 
-      resultEl.innerHTML = 'Search...';
-      var timerId = setInterval(function(){
-        resultEl.innerHTML += '.';
-      }, 1000);
-
       ESDoc.search(keyword, function(error, result){
-        clearInterval(timerId);
         if (error) {
           // todo
           console.log(error);
@@ -86,13 +103,16 @@
         }
       }
 
-      var hitAll = hitPackages.concat(hitCodes).concat(hitTests);
-      showHits(hitAll, '#hits');
+      showHits(hitPackages, '#hitPackages');
+      showHits(hitCodes, '#hitCodes');
+      showHits(hitTests, '#hitTests');
     }
 
     function showHits(hits, id) {
       var resultEl = document.querySelector(id);
       resultEl.innerHTML = '';
+
+      $('[data-tab="' + id + '"] .jsCount').text('(' + hits.length + ')');
 
       if (hits.length === 0) {
         resultEl.textContent = 'No Result';
