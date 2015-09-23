@@ -57,7 +57,7 @@ var ESDoc = {
     }, 5000);
   },
 
-  validateGitURL(url) {
+  validateGitURL: function(url) {
     return !!url.match(/^git@github\.com:[\w\d._-]+\/[\w\d._-]+\.git$/);
   }
 };
