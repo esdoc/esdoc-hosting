@@ -115,12 +115,12 @@ export default class Generator {
     }
 
     if (config.manual) {
-      if (config.manual.overview) path.resolve(repoDirPath, config.manual.overview);
-      if (config.manual.installation) path.resolve(repoDirPath, config.manual.installation);
-      if (config.manual.usage) path.resolve(repoDirPath, config.manual.usage);
-      if (config.manual.example) path.resolve(repoDirPath, config.manual.example);
-      if (config.manual.faq) path.resolve(repoDirPath, config.manual.faq);
-      if (config.manual.changelog) path.resolve(repoDirPath, config.manual.changelog);
+      if (config.manual.overview) config.manual.overview = path.resolve(repoDirPath, config.manual.overview);
+      if (config.manual.installation) config.manual.installation = path.resolve(repoDirPath, config.manual.installation);
+      if (config.manual.usage) config.manual.usage = path.resolve(repoDirPath, config.manual.usage);
+      if (config.manual.example) config.manual.example = path.resolve(repoDirPath, config.manual.example);
+      if (config.manual.faq) config.manual.faq = path.resolve(repoDirPath, config.manual.faq);
+      if (config.manual.changelog) config.manual.changelog = path.resolve(repoDirPath, config.manual.changelog);
     }
 
     config.lint = false;
