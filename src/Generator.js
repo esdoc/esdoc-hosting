@@ -115,12 +115,24 @@ export default class Generator {
     }
 
     if (config.manual) {
-      if (config.manual.overview) config.manual.overview = path.resolve(repoDirPath, config.manual.overview);
-      if (config.manual.installation) config.manual.installation = path.resolve(repoDirPath, config.manual.installation);
-      if (config.manual.usage) config.manual.usage = path.resolve(repoDirPath, config.manual.usage);
-      if (config.manual.example) config.manual.example = path.resolve(repoDirPath, config.manual.example);
-      if (config.manual.faq) config.manual.faq = path.resolve(repoDirPath, config.manual.faq);
-      if (config.manual.changelog) config.manual.changelog = path.resolve(repoDirPath, config.manual.changelog);
+      if (config.manual.asset) config.manual.asset = path.resolve(repoDirPath, config.manual.asset);
+
+      const names = ['overview', 'installation', 'usage', 'tutorial', 'configuration', 'example', 'faq', 'changelog'];
+      for (let name of names) {
+        if (!config.manual[name]) continue;
+
+        for (let i = 0; i < config.manual[name].length; i++) {
+          config.manual[name][i] = path.resolve(repoDirPath, config.manual[name][i]);
+        }
+      }
+      //if (config.manual.overview) config.manual.overview = path.resolve(repoDirPath, config.manual.overview);
+      //if (config.manual.installation) config.manual.installation = path.resolve(repoDirPath, config.manual.installation);
+      //if (config.manual.usage) config.manual.usage = path.resolve(repoDirPath, config.manual.usage);
+      //if (config.manual.tutorial) config.manual.tutorial = path.resolve(repoDirPath, config.manual.tutorial);
+      //if (config.manual.configuration) config.manual.configuration = path.resolve(repoDirPath, config.manual.configuration);
+      //if (config.manual.example) config.manual.example = path.resolve(repoDirPath, config.manual.example);
+      //if (config.manual.faq) config.manual.faq = path.resolve(repoDirPath, config.manual.faq);
+      //if (config.manual.changelog) config.manual.changelog = path.resolve(repoDirPath, config.manual.changelog);
     }
 
     config.lint = false;
