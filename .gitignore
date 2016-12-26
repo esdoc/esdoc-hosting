@@ -10,3 +10,4 @@ npm-debug.log
 /log/*.log
 /elasticsearch/elasticsearch-1.7.1*
 /test/fixture
+.nyc_output

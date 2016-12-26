@@ -13,7 +13,8 @@
     "build": "node ./script/build.js",
     "start": "NODE_PATH=$(npm prefix -g)/lib/node_modules node --harmony out/src/App.js",
     "test": "node ./script/test.js",
-    "test-es5": "node ./script/test-es5.js",
+    "test-prod": "node ./script/test-prod.js",
+    "test-ci": "node ./script/test-ci.js",
     "forever": "NODE_PATH=$(npm prefix -g)/lib/node_modules forever start -c 'node --harmony' out/src/App.js",
     "install-tool": "bash ./script/install-tool.sh"
   },
@@ -33,9 +34,12 @@
     "sqlite3": "^3.0.9"
   },
   "devDependencies": {
-    "babel": "~5.6.14",
-    "coveralls": "~2.11.2",
-    "istanbul": "~0.3.16",
-    "mocha": "~2.2.5"
+    "babel-cli": "6.11.4",
+    "babel-plugin-transform-es2015-modules-commonjs": "6.11.5",
+    "babel-register": "6.11.6",
+    "codecov": "1.0.1",
+    "nyc": "8.3.0",
+    "babel-plugin-istanbul": "2.0.1",
+    "mocha": "2.5.3"
   }
 }
