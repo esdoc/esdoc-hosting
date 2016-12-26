@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "node ./script/build.js",
-    "start": "NODE_PATH=$(npm prefix -g)/lib/node_modules node --harmony out/src/App.js",
+    "start": "NODE_PATH=$(npm prefix -g)/lib/node_modules node out/src/App.js",
     "test": "node ./script/test.js",
     "test-prod": "node ./script/test-prod.js",
     "test-ci": "node ./script/test-ci.js",
