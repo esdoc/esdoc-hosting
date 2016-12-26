@@ -43,6 +43,8 @@ curl -XPOST localhost:9200/esdoc -d @elasticsearch/mapping.json
 # curl -XDELETE localhost:9200/esdoc
 ```
 
+you can see `http://localhost:9200/_plugin/head/`
+
 # SQLite
 ```sh
 sqlite sqlite3/main.db

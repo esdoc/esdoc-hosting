@@ -3,7 +3,6 @@ import fs from 'fs-extra';
 import assert from 'assert';
 import API from '../../src/API.js';
 import DB from '../../src/Util/DB.js';
-import Generator from '../../src/Generator.js';
 import {Response, Request} from './Mock.js';
 
 API.destinationDirPath = './test/fixture/www';
@@ -47,7 +46,7 @@ describe('API:', ()=>{
   it('can search documentation', ()=>{
     const req = new Request({
       query: {
-        keyword: 'decorator'
+        keyword: 'esdoc-test'
       }
     });
 

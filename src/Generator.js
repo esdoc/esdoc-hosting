@@ -1,4 +1,3 @@
-import es6shim from 'core-js/shim';
 import Process from './Util/Process.js';
 import fs from 'fs-extra';
 import path from 'path';
@@ -117,7 +116,9 @@ export default class Generator {
     if (config.manual) {
       if (config.manual.asset) config.manual.asset = path.resolve(repoDirPath, config.manual.asset);
 
-      const names = ['overview', 'installation', 'usage', 'tutorial', 'configuration', 'example', 'faq', 'changelog'];
+      if (config.manual.index) config.manual.index = path.resolve(repoDirPath, config.manual.index);
+
+      const names = ['overview', 'installation', 'usage', 'tutorial', 'configuration', 'example', 'faq', 'changelog', 'design', 'advanced'];
       for (let name of names) {
         if (!config.manual[name]) continue;
 
@@ -125,14 +126,8 @@ export default class Generator {
           config.manual[name][i] = path.resolve(repoDirPath, config.manual[name][i]);
         }
       }
-      //if (config.manual.overview) config.manual.overview = path.resolve(repoDirPath, config.manual.overview);
-      //if (config.manual.installation) config.manual.installation = path.resolve(repoDirPath, config.manual.installation);
-      //if (config.manual.usage) config.manual.usage = path.resolve(repoDirPath, config.manual.usage);
-      //if (config.manual.tutorial) config.manual.tutorial = path.resolve(repoDirPath, config.manual.tutorial);
-      //if (config.manual.configuration) config.manual.configuration = path.resolve(repoDirPath, config.manual.configuration);
-      //if (config.manual.example) config.manual.example = path.resolve(repoDirPath, config.manual.example);
-      //if (config.manual.faq) config.manual.faq = path.resolve(repoDirPath, config.manual.faq);
-      //if (config.manual.changelog) config.manual.changelog = path.resolve(repoDirPath, config.manual.changelog);
+
+      config.manual.coverage = true;
     }
 
     config.lint = false;
@@ -160,9 +155,6 @@ export default class Generator {
       if (safePluginNames.includes(item.name)) results.push(item);
     }
 
-    // esdoc logo plugin
-    results.push({name: './src/Plugin/LogoPlugin.js'});
-
     return results;
   }
 
@@ -179,7 +171,6 @@ export default class Generator {
 
   _injectStyleAndScript(config) {
     config.scripts = ['./www/-/js/ga.js'];
-    config.styles = ['./src/Page/Template/style.css'];
   }
 
   _guessConfig(repoDirPath, esdocDirPath) {
@@ -187,9 +178,26 @@ export default class Generator {
     const esdocConfigPath = `${repoDirPath}/esdoc.json`;
     if (File.isExist(esdocConfigPath)) return;
 
-    // not found package.json, so this is not JS repository
+    // copy .esdoc.json to esdoc.json, if found .esdoc.json
+    const dotESDocConfigPath = `${repoDirPath}/.esdoc.json`;
+    if (File.isExist(dotESDocConfigPath)) {
+      fs.copySync(dotESDocConfigPath, esdocConfigPath);
+      return;
+    }
+
+    // write esdoc.json from `esdoc` in package.json if found `esdoc` in package.json
     const packageJSONPath = `${repoDirPath}/package.json`;
-    if (!File.isExist(packageJSONPath)) return;
+    if (File.isExist(packageJSONPath)) {
+      const packageObj = fs.readJsonSync(packageJSONPath);
+      if ('esdoc' in packageObj) {
+        // write config
+        fs.writeFileSync(esdocConfigPath, JSON.stringify(packageObj.esdoc));
+        return;
+      }
+    } else {
+      // not found package.json, so this is not JS repository
+      return;
+    }
 
     // guess source directory
     const srcPath = `${repoDirPath}/src`;
@@ -213,9 +221,16 @@ export default class Generator {
     const config = {
       source: srcPath,
       destination: esdocDirPath,
-      plugins: [
-        {name: 'esdoc-es7-plugin'}
-      ]
+      experimentalProposal: {
+        classProperties: true,
+        objectRestSpread: true,
+        decorators: true,
+        doExpressions: true,
+        functionBind: true,
+        asyncGenerators: true,
+        exportExtensions: true,
+        dynamicImport: true
+      }
     };
 
     // write config
