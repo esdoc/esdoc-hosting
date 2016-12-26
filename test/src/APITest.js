@@ -23,7 +23,7 @@ describe('API:', ()=>{
   });
 
   it('can generate documentation', ()=>{
-    const gitURL = {git: 'git@github.com:esdoc/esdoc-hosting-test.git', path: '/github.com/esdoc/esdoc-hosting-test'};
+    const gitURL = {git: 'git@github.com:esdoc/esdoc.git', path: '/github.com/esdoc/esdoc'};
 
     return co(function*(){
       const req = new Request({
@@ -46,7 +46,7 @@ describe('API:', ()=>{
   it('can search documentation', ()=>{
     const req = new Request({
       query: {
-        keyword: 'esdoc-test'
+        keyword: 'esdoc'
       }
     });
 
@@ -62,7 +62,7 @@ describe('API:', ()=>{
   it('can delete documentation', ()=>{
     const req = new Request({
       body: {
-        gitUrl: 'git@github.com:esdoc/esdoc-hosting-test.git'
+        gitUrl: 'git@github.com:esdoc/esdoc.git'
       }
     });
 
