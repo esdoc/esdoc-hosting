@@ -43,11 +43,27 @@ curl -XPOST localhost:9200/esdoc -d @elasticsearch/mapping.json
 # curl -XDELETE localhost:9200/esdoc
 ```
 
-you can see `http://localhost:9200/_plugin/head/`
-
 # SQLite
 ```sh
 sqlite sqlite3/main.db
 001.sql
 002.sql
+```
+
+# Local Env
+```sh
+sudo nginx
+tail -f /usr/local/var/log/nginx/error.log
+
+npm run forever
+tail -f ./log/api-yyyy-mm-dd.log
+
+./elasticsearch/elasticsearch-1.7.1/bin/elasticsearch
+open http://localhost:9200/_plugin/head/
+```
+
+# Test Env
+```sh
+./elasticsearch/elasticsearch-1.7.1/bin/elasticsearch
+npm run test
 ```
