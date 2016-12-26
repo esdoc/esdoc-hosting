@@ -3,7 +3,7 @@ sudo: false
 node_js:
   - "6"
 script:
-  - TRAVIS=1 npm run test-cli
+  - npm run test-ci
 install:
   - npm install
   - npm run install-tool
