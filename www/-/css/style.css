@@ -45,6 +45,7 @@ header {
 
 header a {
   margin: 0 5px;
+  vertical-align: top;
 }
 
 header .logo {
@@ -62,8 +63,12 @@ header .logo {
 }
 
 .logo {
-  color: #E02130;
+  color: #E55151;
   font-weight: bold;
+}
+
+.logo img {
+  width: 46px;
 }
 
 .container {
@@ -73,7 +78,7 @@ header .logo {
 
 .title {
   font-size: 2em;
-  color: #E02130;
+  color: #E55151;
   font-weight: bold;
 }
 
