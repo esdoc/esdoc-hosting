@@ -114,7 +114,7 @@
 
       var path = res.path;
       var pollingPath = res.path + '/.finish.json';
-      ESDoc.polling(pollingPath, 60000, function(error, responseText){
+      ESDoc.polling(pollingPath, 180000, function(error, responseText){
         creating = false;
         clearInterval(timerId);
         progress.textContent = '';
