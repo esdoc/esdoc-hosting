@@ -71,7 +71,7 @@
     if (creating) return;
 
     errorEl.textContent = '';
-    progress.textContent = '';
+    progress.inenrHTML = '';
     link.textContent = '';
     issueLink.style.display = 'none';
 
@@ -83,9 +83,9 @@
     }
 
     var timerId = setInterval(function(){
-      progress.textContent += '.';
+      progress.innerHTML += '.';
     }, 1000);
-    progress.textContent += 'Please wait.';
+    progress.innerHTML += 'Please wait.<br/>';
 
     creating = true;
 
@@ -96,7 +96,7 @@
         clearInterval(timerId);
         console.error(error, responseText);
         errorEl.textContent = 'Please retry.';
-        progress.text = '';
+        progress.innerHTML = '';
         issueLink.style.display = '';
         return;
       }
@@ -107,7 +107,7 @@
         creating = false;
         clearInterval(timerId);
         errorEl.textContent = res.message;
-        progress.text = '';
+        progress.innerHTML = '';
         issueLink.style.display = '';
         return;
       }
@@ -117,7 +117,7 @@
       ESDoc.polling(pollingPath, 180000, function(error, responseText){
         creating = false;
         clearInterval(timerId);
-        progress.textContent = '';
+        progress.innerHTML = '';
 
         if (error) {
           // todo
@@ -139,7 +139,7 @@
         link.href = path;
         link.textContent = path.replace('/', '');
 
-        progress.textContent = 'Success!';
+        progress.innerHTML = 'Success!';
       });
     });
   });
@@ -162,7 +162,7 @@
         // todo
         console.error(error, responseText);
         errorEl.textContent = 'Please retry.';
-        progress.text = '';
+        progress.innerHTML = '';
         issueLink.style.display = '';
         return;
       }
@@ -170,11 +170,11 @@
       var res = JSON.parse(responseText);
       if (!res.success) {
         errorEl.textContent = res.message;
-        progress.text = '';
+        progress.innerHTML = '';
         return;
       }
 
-      progress.textContent = 'Success!';
+      progress.innerHTML = 'Success!';
     });
   });
 
