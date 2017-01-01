@@ -4,7 +4,6 @@
   "description": "ESDoc Hosting Service",
   "author": "h13i32maru",
   "homepage": "https://doc.esdoc.org/",
-  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/h13i32maru/esdoc-hosting"
