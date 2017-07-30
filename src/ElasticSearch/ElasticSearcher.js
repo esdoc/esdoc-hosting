@@ -85,8 +85,12 @@ export default class ElasticSearcher {
       const gitUrl = source.git_url;
       if (!packages[gitUrl]) {
         const record = yield DB.selectGitURL(gitUrl);
-        const packageObj = JSON.parse(record.package);
-        packages[gitUrl] = packageObj.name;
+        if (record.package) {
+          const packageObj = JSON.parse(record.package);
+          packages[gitUrl] = packageObj.name;
+        } else {
+          packages[gitUrl] = gitUrl.split('/')[1];
+        }
       }
 
       source.package = packages[gitUrl];
