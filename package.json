@@ -15,7 +15,7 @@
     "test": "node ./script/test.js",
     "test-prod": "node ./script/test-prod.js",
     "test-ci": "node ./script/test-ci.js",
-    "forever": "NODE_PATH=$(npm prefix -g)/lib/node_modules forever start -c 'node --harmony' out/src/App.js",
+    "forever": "NODE_PATH=$(npm prefix -g)/lib/node_modules forever start ./out/src/App.js",
     "install-tool": "bash ./script/install-tool.sh"
   },
   "dependencies": {
