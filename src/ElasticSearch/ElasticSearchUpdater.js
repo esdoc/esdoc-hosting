@@ -59,9 +59,11 @@ export default class ElasticSearchUpdater {
   _updateMeta() {
     let packageObj;
     try {
-      const packagePath = path.resolve(this._documentDirPath, 'package.json');
-      const packageJSON = fs.readFileSync(packagePath);
-      packageObj = JSON.parse(packageJSON);
+      const dumpPath = path.resolve(this._documentDirPath, 'index.json');
+      const json = fs.readFileSync(dumpPath);
+      const docs = JSON.parse(json);
+      const packageDoc = docs.find(doc => doc.kind === 'packageJSON');
+      if (packageDoc) packageObj = JSON.parse(packageDoc.content);
     } catch (e) {
       Logger.e(e);
       // ignore
@@ -108,7 +110,7 @@ export default class ElasticSearchUpdater {
   }
 
   _updateTag() {
-    const dumpPath = path.resolve(this._documentDirPath, 'dump.json');
+    const dumpPath = path.resolve(this._documentDirPath, 'index.json');
     let tags;
     try {
       const json = fs.readFileSync(dumpPath);
