@@ -161,59 +161,59 @@ export default class Generator {
   }
 
   _checkManualPlugin(config, repoDirPath) {
-    for (const plugin of config.plugins) {
-      if (plugin.name === 'esdoc-standard-plugin') check(plugin.option.manual);
-      if (plugin.name === 'esdoc-integrate-manual-plugin') check(plugin.option);
-    }
-
-    function check(manual) {
+    const check = (manual)=> {
       if (manual.asset) manual.asset = this._checkPath(repoDirPath, manual.asset);
       if (manual.index) manual.index = this._checkPath(repoDirPath, manual.index);
       for (let i = 0; i < manual.files.length; i++) {
         manual.files[i] = this._checkPath(repoDirPath, manual.files[i]);
       }
+    };
+
+    for (const plugin of config.plugins) {
+      if (plugin.name === 'esdoc-standard-plugin') check(plugin.option.manual);
+      if (plugin.name === 'esdoc-integrate-manual-plugin') check(plugin.option);
     }
   }
 
   _checkTestPlugin(config, repoDirPath) {
+    const check = (test) => {
+      test.source = this._checkPath(repoDirPath, test.source);
+    };
+
     for (const plugin of config.plugins) {
       if (plugin.name === 'esdoc-standard-plugin') check(plugin.option.test);
       if (plugin.name === 'esdoc-integrate-test-plugin') check(plugin.option);
     }
-
-    function check(test) {
-      test.source = this._checkPath(repoDirPath, test.source);
-    }
   }
 
   _checkBrandPlugin(config, repoDirPath) {
+    const check = (option) => {
+      option.logo = this._checkPath(repoDirPath, option.logo);
+    };
+
     for (const plugin of config.plugins) {
       if (plugin.name === 'esdoc-standard-plugin') check(plugin.option.brand);
       if (plugin.name === 'esdoc-brand-plugin') check(plugin.option);
     }
-
-    function check(option) {
-      option.logo = this._checkPath(repoDirPath, option.logo);
-    }
   }
 
   _checkScriptPlugin(config, repoDirPath) {
+    const check = (option) => {
+      option.scripts = [];
+    };
+
     for (const plugin of config.plugins) {
       if (plugin.name === 'esdoc-inject-script-plugin') check(plugin.option);
-    }
-
-    function check(option) {
-      option.scripts = [];
     }
   }
 
   _checkStylePlugin(config, repoDirPath) {
+    const check = (option) =>{
+      option.styles = option.styles.map(style => this._checkPath(repoDirPath, style));
+    };
+
     for (const plugin of config.plugins) {
       if (plugin.name === 'esdoc-inject-style-plugin') check(plugin.option);
-    }
-
-    function check(option) {
-      option.styles = option.styles.map(style => this._checkPath(repoDirPath, style));
     }
   }
 
