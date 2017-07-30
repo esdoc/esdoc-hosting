@@ -1,6 +1,7 @@
 {
   "name": "esdoc-hosting",
   "version": "0.0.0",
+  "private": true,
   "description": "ESDoc Hosting Service",
   "author": "h13i32maru",
   "homepage": "https://doc.esdoc.org/",

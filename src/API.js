@@ -1,6 +1,5 @@
 import co from 'co';
 import fs from 'fs-extra';
-import IceCap from 'ice-cap';
 import GitURL from './Util/GitURL.js';
 import ESDocGenerator from './Generator';
 import DB from './Util/DB.js';

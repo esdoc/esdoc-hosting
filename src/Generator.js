@@ -94,51 +94,16 @@ export default class Generator {
 
   _writeSafeESDocConfig(repoDirPath, esdocDirPath) {
     this._guessConfig(repoDirPath, esdocDirPath);
-
     const esdocConfigPath = `${repoDirPath}/esdoc.json`;
     const config = JSON.parse(fs.readFileSync(esdocConfigPath));
 
-    config.source = path.resolve(repoDirPath, config.source);
-    config.destination = esdocDirPath;
-
-    if (config.index) {
-      config.index = path.resolve(repoDirPath, config.index);
-    } else {
-      config.index = path.resolve(repoDirPath, './README.md');
-    }
-
-    if (config.package) {
-      config.package = path.resolve(repoDirPath, config.package);
-    } else {
-      config.package = path.resolve(repoDirPath, './package.json');
-    }
-
-    if (config.manual) {
-      if (config.manual.asset) config.manual.asset = path.resolve(repoDirPath, config.manual.asset);
-
-      if (config.manual.index) config.manual.index = path.resolve(repoDirPath, config.manual.index);
-
-      const names = ['overview', 'installation', 'usage', 'tutorial', 'configuration', 'example', 'faq', 'changelog', 'design', 'advanced'];
-      for (let name of names) {
-        if (!config.manual[name]) continue;
-
-        for (let i = 0; i < config.manual[name].length; i++) {
-          config.manual[name][i] = path.resolve(repoDirPath, config.manual[name][i]);
-        }
-      }
-
-      config.manual.coverage = true;
-    }
-
-    config.lint = false;
-    config.coverage = true;
-    config.scripts = [];
-    config.styles = [];
-    config.plugins = this._selectSafePlugin(config.plugins);
-
-    if (config.test) config.test.source = path.resolve(repoDirPath, config.test.source);
-
-    if (!this._checkSafeESDocConfig(config, repoDirPath)) throw new Error('esdoc.json is unsafe. Please check esdoc.json');
+    this._checkCore(config, repoDirPath, esdocDirPath);
+    this._checkPlugin(config);
+    this._checkManualPlugin(config, repoDirPath);
+    this._checkTestPlugin(config, repoDirPath);
+    this._checkBrandPlugin(config, repoDirPath);
+    this._checkScriptPlugin(config, repoDirPath);
+    this._checkStylePlugin(config, repoDirPath);
 
     this._injectStyleAndScript(config);
 
@@ -147,30 +112,128 @@ export default class Generator {
     return esdocConfigPath;
   }
 
-  _selectSafePlugin(plugins = []) {
-    const safePluginNames = ['esdoc-es7-plugin', 'esdoc-importpath-plugin'];
-    const results = [];
+  _checkCore(config, repoDirPath, esdocDirPath) {
+    config.source = path.resolve(repoDirPath, config.source);
+    config.destination = esdocDirPath;
 
-    for (let item of plugins) {
-      if (safePluginNames.includes(item.name)) results.push(item);
+    if (config.index) {
+      config.index = this._checkPath(repoDirPath, config.index);
+    } else {
+      config.index = this._checkPath(repoDirPath, './README.md');
     }
 
-    return results;
+    if (config.package) {
+      config.package = this._checkPath(repoDirPath, config.package);
+    } else {
+      config.package = this._checkPath(repoDirPath, './package.json');
+    }
   }
 
-  _checkSafeESDocConfig(config, repoDirPath) {
-    let regexp = new RegExp(`^${repoDirPath}/`);
+  _checkPlugin(config) {
+    const safePluginNames = [
+      'esdoc-accessor-plugin',
+      'esdoc-brand-plugin',
+      'esdoc-coverage-plugin',
+      'esdoc-ecmascript-proposal-plugin',
+      'esdoc-exclude-source-plugin',
+      'esdoc-external-ecmascript-plugin',
+      'esdoc-external-nodejs-plugin',
+      'esdoc-external-webapi-plugin',
+      'esdoc-flow-type-plugin',
+      'esdoc-importpath-plugin',
+      'esdoc-inject-script-plugin',
+      'esdoc-inject-style-plugin',
+      'esdoc-integrate-manual-plugin',
+      'esdoc-integrate-test-plugin',
+      'esdoc-jsx-plugin',
+      'esdoc-lint-plugin',
+      'esdoc-publish-html-plugin',
+      'esdoc-publish-markdown-plugin',
+      'esdoc-react-plugin',
+      'esdoc-standard-plugin',
+      'esdoc-type-inference-plugin',
+      'esdoc-typescript-plugin',
+      'esdoc-undocumented-identifier-plugin',
+      'esdoc-unexported-identifier-plugin'
+    ];
 
-    if (!config.source.match(regexp)) return false;
-    if (!config.index.match(regexp)) return false;
-    if (!config.package.match(regexp)) return false;
-    if (config.test && !config.test.source.match(regexp)) return false;
+    config.plugins = config.plugins.filter(plugin => safePluginNames.includes(plugin.name));
+  }
 
-    return true;
+  _checkManualPlugin(config, repoDirPath) {
+    for (const plugin of config.plugins) {
+      if (plugin.name === 'esdoc-standard-plugin') check(plugin.option.manual);
+      if (plugin.name === 'esdoc-integrate-manual-plugin') check(plugin.option);
+    }
+
+    function check(manual) {
+      if (manual.asset) manual.asset = this._checkPath(repoDirPath, manual.asset);
+      if (manual.index) manual.index = this._checkPath(repoDirPath, manual.index);
+      for (let i = 0; i < manual.files.length; i++) {
+        manual.files[i] = this._checkPath(repoDirPath, manual.files[i]);
+      }
+    }
+  }
+
+  _checkTestPlugin(config, repoDirPath) {
+    for (const plugin of config.plugins) {
+      if (plugin.name === 'esdoc-standard-plugin') check(plugin.option.test);
+      if (plugin.name === 'esdoc-integrate-test-plugin') check(plugin.option);
+    }
+
+    function check(test) {
+      test.source = this._checkPath(repoDirPath, test.source);
+    }
+  }
+
+  _checkBrandPlugin(config, repoDirPath) {
+    for (const plugin of config.plugins) {
+      if (plugin.name === 'esdoc-standard-plugin') check(plugin.option.brand);
+      if (plugin.name === 'esdoc-brand-plugin') check(plugin.option);
+    }
+
+    function check(option) {
+      option.logo = this._checkPath(repoDirPath, option.logo);
+    }
+  }
+
+  _checkScriptPlugin(config, repoDirPath) {
+    for (const plugin of config.plugins) {
+      if (plugin.name === 'esdoc-inject-script-plugin') check(plugin.option);
+    }
+
+    function check(option) {
+      option.scripts = [];
+    }
+  }
+
+  _checkStylePlugin(config, repoDirPath) {
+    for (const plugin of config.plugins) {
+      if (plugin.name === 'esdoc-inject-style-plugin') check(plugin.option);
+    }
+
+    function check(option) {
+      option.styles = option.styles.map(style => this._checkPath(repoDirPath, style));
+    }
+  }
+
+  _checkPath(repoDirPath, filePath) {
+    const safeFilePath = path.resolve(repoDirPath, filePath);
+    const regexp = new RegExp(`^${repoDirPath}/`);
+    if (!safeFilePath.match(regexp)) throw new Error(`file path is not safe: ${filePath}`);
+    return safeFilePath;
   }
 
   _injectStyleAndScript(config) {
-    config.scripts = ['./www/-/js/ga.js'];
+    const plugin = config.plugins.find(plugin => plugin.name === 'esdoc-inject-script-plugin');
+    if (plugin) {
+      plugin.option.scripts = ['./www/-/js/ga.js'];
+    } else {
+      config.plugins.push({
+        name: 'esdoc-inject-script-plugin',
+        option: {scripts: ['./www/-/js/ga.js']}
+      });
+    }
   }
 
   _guessConfig(repoDirPath, esdocDirPath) {
@@ -221,16 +284,7 @@ export default class Generator {
     const config = {
       source: srcPath,
       destination: esdocDirPath,
-      experimentalProposal: {
-        classProperties: true,
-        objectRestSpread: true,
-        decorators: true,
-        doExpressions: true,
-        functionBind: true,
-        asyncGenerators: true,
-        exportExtensions: true,
-        dynamicImport: true
-      }
+      plugins: [{name: 'esdoc-standard-plugin'}]
     };
 
     // write config
