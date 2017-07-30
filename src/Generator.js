@@ -73,7 +73,11 @@ export default class Generator {
 
       // package.json
       try {
-        self._packageJSON = fs.readFileSync(`${esdocDirPath}/package.json`).toString();
+        const dumpPath = path.resolve(`${esdocDirPath}/index.json`);
+        const json = fs.readFileSync(dumpPath);
+        const docs = JSON.parse(json);
+        const packageDoc = docs.find(doc => doc.kind === 'packageJSON');
+        if (packageDoc) self._packageJSON = packageDoc.content;
       } catch(e) {
         // ignore
       }
