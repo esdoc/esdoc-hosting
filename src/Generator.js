@@ -174,7 +174,7 @@ export default class Generator {
     };
 
     for (const plugin of config.plugins) {
-      if (plugin.name === 'esdoc-standard-plugin' && plugin.option.manual) check(plugin.option.manual);
+      if (plugin.name === 'esdoc-standard-plugin' && plugin.option && plugin.option.manual) check(plugin.option.manual);
       if (plugin.name === 'esdoc-integrate-manual-plugin') check(plugin.option);
     }
   }
@@ -185,7 +185,7 @@ export default class Generator {
     };
 
     for (const plugin of config.plugins) {
-      if (plugin.name === 'esdoc-standard-plugin' && plugin.option.test) check(plugin.option.test);
+      if (plugin.name === 'esdoc-standard-plugin' && plugin.option && plugin.option.test) check(plugin.option.test);
       if (plugin.name === 'esdoc-integrate-test-plugin') check(plugin.option);
     }
   }
@@ -196,7 +196,7 @@ export default class Generator {
     };
 
     for (const plugin of config.plugins) {
-      if (plugin.name === 'esdoc-standard-plugin' && plugin.option.brand) check(plugin.option.brand);
+      if (plugin.name === 'esdoc-standard-plugin' && plugin.option && plugin.option.brand) check(plugin.option.brand);
       if (plugin.name === 'esdoc-brand-plugin') check(plugin.option);
     }
   }
